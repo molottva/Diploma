@@ -16,12 +16,17 @@ public class DailyTripPage {
 
     private SelenideElement formHeading = $x("//form//preceding-sibling::h3");
     private SelenideElement form = $x("//form");
-    private SelenideElement numberField = form.$x(".//span[text()='Номер карты']//ancestor::div/span");
-    private SelenideElement monthField = form.$x(".//span[text()='Месяц']//ancestor::div/span/span[1]/span");
-    private SelenideElement yearField = form.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
-    private SelenideElement holderField = form.$x(".//span[text()='Владелец']//ancestor::div/span/span[1]/span");
-    private SelenideElement cvcField = form.$x(".//span[text()='CVC/CVV']//ancestor::div/span/span[2]/span");
-    private SelenideElement continuousButton = form.$x(".//button");
+    private SelenideElement numberLabel = form.$x(".//span[text()='Номер карты']//ancestor::div/span");
+    private SelenideElement numberInput = numberLabel.$x(".//ancestor::span//input");
+    private SelenideElement monthLabel = form.$x(".//span[text()='Месяц']//ancestor::div/span/span[1]/span");
+    private SelenideElement monthInput = monthLabel.$x(".//input");
+    private SelenideElement yearLabel = form.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
+    private SelenideElement yearInput = yearLabel.$x(".//input");
+    private SelenideElement holderLabel = form.$x(".//span[text()='Владелец']//ancestor::div/span/span[1]/span");
+    private SelenideElement holderInput = holderLabel.$x(".//input");
+    private SelenideElement cvcLabel = form.$x(".//span[text()='CVC/CVV']//ancestor::div/span/span[2]/span");
+    private SelenideElement cvcInput = cvcLabel.$x(".//input");
+    private SelenideElement continuousButton = form.$x(".//span[text()='Продолжить']//ancestor::button");
 
     private SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
     private SelenideElement successCloseButton = successNotification.$x("./button");
@@ -67,29 +72,53 @@ public class DailyTripPage {
     }
 
     public void insert(String number, String month, String year, String holder, String cvc) {
-        numberField.val(number);
-        monthField.val(month);
-        yearField.val(year);
-        holderField.val(holder);
-        cvcField.val(cvc);
+        numberLabel.click();
+        numberInput.val(number);
+        monthLabel.click();
+        monthInput.val(month);
+        yearLabel.click();
+        yearInput.val(year);
+        holderLabel.click();
+        holderInput.val(holder);
+        cvcLabel.click();
+        cvcInput.val(cvc);
         continuousButton.click();
     }
 
     public void insertUseKeyboard(String number, String month, String year, String holder, String cvc) {
+        numberLabel.shouldNot(Condition.cssClass("input_focused"));
+        monthLabel.shouldNot(Condition.cssClass("input_focused"));
+        yearLabel.shouldNot(Condition.cssClass("input_focused"));
+        holderLabel.shouldNot(Condition.cssClass("input_focused"));
+        cvcLabel.shouldNot(Condition.cssClass("input_focused"));
+
         creditButton.pressTab();
-        numberField.should(Condition.focused).val(number).pressTab();
-        monthField.should(Condition.focused).val(month).pressTab();
-        yearField.should(Condition.focused).val(year).pressTab();
-        holderField.should(Condition.focused).val(holder).pressTab();
-        cvcField.should(Condition.focused).val(cvc).pressTab();
+        numberLabel.should(Condition.cssClass("input_focused"));
+        numberInput.val(number).pressTab();
+        monthLabel.should(Condition.cssClass("input_focused"));
+        monthInput.val(month).pressTab();
+        yearLabel.should(Condition.cssClass("input_focused"));
+        yearInput.val(year).pressTab();
+        holderLabel.should(Condition.cssClass("input_focused"));
+        holderInput.val(holder).pressTab();
+        cvcLabel.should(Condition.cssClass("input_focused"));
+        cvcInput.val(cvc).pressTab();
         continuousButton.should(Condition.focused).pressEnter();
+    }
+
+    public void matchesInputValue(String number, String month, String year, String holder, String cvc) {
+        numberInput.should(Condition.value(number));
+        monthInput.should(Condition.value(month));
+        yearInput.should(Condition.value(year));
+        holderInput.should(Condition.value(holder));
+        cvcInput.should(Condition.value(cvc));
     }
 
     public void success() {
         successNotification.should(Condition.visible, Duration.ofSeconds(15));
         successNotification.should(Condition.cssClass("notification_visible"));
-        successNotification.$x("/div[@class='notification__title']").should(Condition.text("Успешно"));
-        successNotification.$x("/div[@class='notification__content']").should(Condition.text("Операция одобрена Банком."));
+        successNotification.$x("./div[@class='notification__title']").should(Condition.text("Успешно"));
+        successNotification.$x("./div[@class='notification__content']").should(Condition.text("Операция одобрена Банком."));
         successCloseButton.click();
         successNotification.should(Condition.hidden);
     }

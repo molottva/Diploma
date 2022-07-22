@@ -22,6 +22,7 @@ public class DbHelper {
 
     @SneakyThrows
     public static void setDown() {
+        setup();
         var sqlUpdateOne = "DELETE FROM credit_request_entity;";
         var sqlUpdateTwo = "DELETE FROM payment_entity;";
         var sqlUpdateThree = "DELETE FROM order_entity;";

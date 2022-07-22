@@ -20,12 +20,12 @@ public class DataHelper {
     }
 
     public static UserData getValidUserWithApprovedCard() {
-        return new UserData(getNumberByStatus("approved"), generateMonth(1), generateYear(1),
+        return new UserData(getNumberByStatus("approved"), generateMonth(1), generateYear(2),
                 generateHolder(), generateCVC(3));
     }
 
     public static UserData getValidUserWithDeclinedCard() {
-        return new UserData(getNumberByStatus("declined"), generateMonth(1), generateYear(1),
+        return new UserData(getNumberByStatus("declined"), generateMonth(1), generateYear(2),
                 generateHolder(), generateCVC(3));
     }
 
@@ -34,7 +34,7 @@ public class DataHelper {
         if (status.equals("APPROVED")) {
             return "4444 4444 4444 4441";
         } else if (status.equals("DECLINED")) {
-            return "DECLINED";
+            return "4444 4444 4444 4442";
         }
         return null;
     }
