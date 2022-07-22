@@ -61,7 +61,7 @@ public class DataHelper {
 
     public static String generateDigit(int quantity) {
         String tmp = "";
-        for(int i = 0; i < quantity; i++) {
+        for (int i = 0; i < quantity; i++) {
             tmp = tmp + String.valueOf(faker.number().randomDigit());
         }
         return tmp;
