@@ -20,13 +20,8 @@ public class DbHelper {
     @SneakyThrows
     public static void setup() {
         runner = new QueryRunner();
-        var url = System.getProperty("url");
-        if(url == null) {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
-        } else {
-            conn = DriverManager.getConnection(url, "app", "pass");
-        }
-//        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+//        var s = System.getProperty("url");
+        conn = DriverManager.getConnection(System.getProperty("url"), "app", "pass");
     }
 
     @SneakyThrows
