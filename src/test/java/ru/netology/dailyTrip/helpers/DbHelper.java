@@ -1,6 +1,9 @@
 package ru.netology.dailyTrip.helpers;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -17,7 +20,13 @@ public class DbHelper {
     @SneakyThrows
     public static void setup() {
         runner = new QueryRunner();
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+        var url = System.getProperty("url");
+        if(url == null) {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+        } else {
+            conn = DriverManager.getConnection(url, "app", "pass");
+        }
+//        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
     }
 
     @SneakyThrows
