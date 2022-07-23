@@ -56,6 +56,11 @@ public class DataHelper {
         return faker.name().fullName();
     }
 
+    public static String generateHolder(Locale locale) {
+        Faker fakerCustomLocale = new Faker(locale);
+        return fakerCustomLocale.name().fullName();
+    }
+
     public static String generateCVC(int quantity) {
         return generateDigit(quantity);
     }

@@ -13,8 +13,6 @@ import java.util.List;
 import static com.codeborne.selenide.Selenide.open;
 import static org.testng.AssertJUnit.*;
 
-//todo проверка с бд
-
 @Epic("Frontend тестирование функционала Путешествие дня")
 public class DailyTripFrontendTest {
     private static DataHelper.UserData user;
