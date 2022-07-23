@@ -114,7 +114,7 @@ public class DailyTripFrontendTest {
 
         assertTrue(credits.get(0).getStatus().equalsIgnoreCase("approved"));
         assertEquals(credits.get(0).getBank_id(), orders.get(0).getPayment_id());
-        assertEquals(credits.get(0).getId() ,orders.get(0).getCredit_id());
+        assertEquals(credits.get(0).getId(), orders.get(0).getCredit_id());
     }
 
     @Feature("Покупка тура в кредит")
@@ -137,6 +137,6 @@ public class DailyTripFrontendTest {
 
         assertTrue(credits.get(0).getStatus().equalsIgnoreCase("declined"));
         assertEquals(credits.get(0).getBank_id(), orders.get(0).getPayment_id());
-        assertEquals(credits.get(0).getId() ,orders.get(0).getCredit_id());
+        assertEquals(credits.get(0).getId(), orders.get(0).getCredit_id());
     }
 }
