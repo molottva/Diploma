@@ -2,6 +2,7 @@ package ru.netology.dailyTrip.helpers;
 
 import com.github.javafaker.Faker;
 import lombok.Value;
+import ru.netology.dailyTrip.page.DailyTripPage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

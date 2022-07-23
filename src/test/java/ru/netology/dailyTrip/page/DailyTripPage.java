@@ -8,8 +8,8 @@ import java.time.Duration;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class DailyTripPage {
-    private SelenideElement dailyTripHeading = $x("//div[@id='root']/div/h2");
-    private SelenideElement dailyTripCard = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
+    private static SelenideElement dailyTripHeading = $x("//div[@id='root']/div/h2");
+    private static SelenideElement dailyTripCard = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
 
     private SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
     private SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
@@ -130,5 +130,10 @@ public class DailyTripPage {
         errorNotification.$x("/div[@class='notification__content']").should(Condition.text("Ошибка! Банк отказал в проведении операции."));
         errorCloseButton.click();
         errorNotification.should(Condition.hidden);
+    }
+
+    public int getAmount() {
+        var str = dailyTripCard.$x(".//ul/li[contains(text(), 'руб')]").getText().split(" ");
+        return Integer.valueOf(str[1] + str[2]);
     }
 }
