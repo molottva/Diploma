@@ -62,14 +62,28 @@ public class DataHelper {
     }
 
     public static String generateCVC(int quantity) {
-        return generateDigit(quantity);
+        return deleteSpacebar(generateDigit(quantity));
     }
 
     public static String generateDigit(int quantity) {
         String tmp = "";
         for (int i = 0; i < quantity; i++) {
+            if (i % 4 == 0) {
+                tmp = tmp + " ";
+            }
             tmp = tmp + String.valueOf(faker.number().randomDigit());
         }
         return tmp;
+    }
+
+    public static String deleteSpacebar(String str) {
+        var array = str.split(" ");
+        String result = "";
+        int i = 1;
+        for (String tmp : array) {
+            result = result + tmp;
+            i++;
+        }
+        return result;
     }
 }

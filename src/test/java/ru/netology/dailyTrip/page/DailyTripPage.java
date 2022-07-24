@@ -132,6 +132,56 @@ public class DailyTripPage {
         errorNotification.should(Condition.hidden);
     }
 
+    public void numberInputEmpty() {
+        numberLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
+        numberLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+    }
+
+    public void numberInputInvalid() {
+        numberLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
+        numberLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
+    }
+
+    public void monthInputEmpty() {
+        monthLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
+        monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+    }
+
+    public void monthInputInvalid() {
+        monthLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
+        monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверно указан срок действия карты"));
+    }
+
+    public void yearInputEmpty() {
+        yearLabel.should(Condition.cssClass("input_invalid"));
+        yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
+    }
+
+    public void yearInputInvalid() {
+        yearLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
+        yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Истёк срок действия карты"));
+    }
+
+    public void holderInputEmpty() {
+        holderLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
+        holderLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+    }
+
+    public void holderInputInvalid() {
+        holderLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
+        holderLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
+    }
+
+    public void cvcInputEmpty() {
+        cvcLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
+        cvcLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+    }
+
+    public void cvcInputInvalid() {
+        cvcLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
+        cvcLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
+    }
+
     public int getAmount() {
         var str = dailyTripCard.$x(".//ul/li[contains(text(), 'руб')]").getText().split(" ");
         return Integer.valueOf(str[1] + str[2]);
