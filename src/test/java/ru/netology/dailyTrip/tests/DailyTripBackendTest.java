@@ -143,7 +143,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пустое body запроса")
-    @Severity(SeverityLevel.CRITICAL)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyBodyPay() {
         user = DataHelper.getValidUserWithApprovedCard();
@@ -161,7 +161,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура в кредит")
     @Story("Пустое body запроса")
-    @Severity(SeverityLevel.CRITICAL)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyBodyCredit() {
         user = DataHelper.getValidUserWithApprovedCard();
@@ -179,7 +179,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пустое значение у атрибута number в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyNumberPay() {
         user = new DataHelper.UserData(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
@@ -199,7 +199,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура в кредит")
     @Story("Пустое значение у атрибута number в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyNumberCredit() {
         user = new DataHelper.UserData(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
@@ -219,7 +219,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пустое значение у атрибута month в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyMonthPay() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
@@ -239,7 +239,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура в кредит")
     @Story("Пустое значение у атрибута month в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyMonthCredit() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
@@ -259,7 +259,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пустое значение у атрибута year в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyYearPay() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
@@ -279,7 +279,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура в кредит")
     @Story("Пустое значение у атрибута year в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyYearCredit() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
@@ -299,7 +299,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пустое значение у атрибута holder в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyHolderPay() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
@@ -319,7 +319,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура в кредит")
     @Story("Пустое значение у атрибута holder в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyHolderCredit() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
@@ -339,7 +339,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пустое значение у атрибута cvc в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyCvcPay() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
@@ -359,7 +359,7 @@ public class DailyTripBackendTest {
 
     @Feature("Покупка тура в кредит")
     @Story("Пустое значение у атрибута cvc в body запроса")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyCvcCredit() {
         user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
