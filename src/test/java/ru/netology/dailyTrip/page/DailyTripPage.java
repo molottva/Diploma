@@ -154,7 +154,7 @@ public class DailyTripPage {
 
     public void yearInputEmpty() {
         yearLabel.should(Condition.cssClass("input_invalid"));
-        yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
+        yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
     }
 
     public void yearInputInvalid() {
@@ -185,5 +185,9 @@ public class DailyTripPage {
     public int getAmount() {
         var str = dailyTripCard.$x(".//ul/li[contains(text(), 'руб')]").getText().split(" ");
         return Integer.valueOf(str[1] + str[2]);
+    }
+
+    public String getHolder() {
+        return holderInput.getValue();
     }
 }

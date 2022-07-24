@@ -53,7 +53,7 @@ public class DataHelper {
     }
 
     public static String generateHolder() {
-        return faker.name().fullName();
+        return faker.name().fullName().toUpperCase();
     }
 
     public static String generateHolder(Locale locale) {

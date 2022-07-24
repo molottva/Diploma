@@ -1,6 +1,7 @@
 package ru.netology.dailyTrip.tests;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
+import com.github.javafaker.Faker;
 import io.qameta.allure.*;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.testng.annotations.*;
@@ -9,12 +10,14 @@ import ru.netology.dailyTrip.helpers.DbHelper;
 import ru.netology.dailyTrip.page.DailyTripPage;
 
 import java.util.List;
+import java.util.Locale;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.testng.AssertJUnit.*;
 
 @Epic("Frontend тестирование функционала Путешествие дня")
 public class DailyTripFrontendTest {
+    private static Faker faker = new Faker(Locale.ENGLISH);
     private static DataHelper.UserData user;
     private static DailyTripPage dailyTrip;
     private static List<DbHelper.PaymentEntity> payments;
@@ -165,6 +168,18 @@ public class DailyTripFrontendTest {
     }
 
     @Feature("Покупка тура по карте")
+    @Story("Пустое поле номер карты")
+    @Severity(SeverityLevel.NORMAL)
+    @Test
+    public void shouldNotificationWithEmptyNumber() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        dailyTrip.insert("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesInputValue("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.numberInputEmpty();
+    }
+
+    @Feature("Покупка тура по карте")
     @Story("Заполнение поля номера карты без пробелов")
     @Severity(SeverityLevel.NORMAL)
     @Test
@@ -280,6 +295,18 @@ public class DailyTripFrontendTest {
     }
 
     @Feature("Покупка тура по карте")
+    @Story("Пустое поле месяц")
+    @Severity(SeverityLevel.NORMAL)
+    @Test
+    public void shouldNotificationWithEmptyMonth() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        dailyTrip.insert(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesInputValue(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.monthInputEmpty();
+    }
+
+    @Feature("Покупка тура по карте")
     @Story("Заполнение поля месяц одной цифрой")
     @Severity(SeverityLevel.NORMAL)
     @Test
@@ -368,6 +395,18 @@ public class DailyTripFrontendTest {
         dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
         dailyTrip.matchesInputValue(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
         dailyTrip.monthInputEmpty();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Пустое поле год")
+    @Severity(SeverityLevel.NORMAL)
+    @Test
+    public void shouldNotificationWithEmptyYear() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        dailyTrip.insert(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
+        dailyTrip.yearInputEmpty();
     }
 
     @Feature("Покупка тура по карте")
@@ -477,24 +516,144 @@ public class DailyTripFrontendTest {
         dailyTrip.yearInputEmpty();
     }
 
-    //todo тесты на holder
+    @Feature("Покупка тура по карте")
+    @Story("Пустое поле владелец")
+    @Severity(SeverityLevel.NORMAL)
+    @Test
+    public void shouldNotificationWithEmptyHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), "", user.getCvc());
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), "", user.getCvc());
+        dailyTrip.holderInputEmpty();
+    }
 
-    //todo сделать тесты на пустые поля
-//    @Feature("Покупка тура по карте")
-//    @Story("Пустое поле номер карты")
-//    @Severity(SeverityLevel.NORMAL)
-//    @Test
-//    public void shouldNotificationWithEmptyNumber() {
-//        user = DataHelper.getValidUserWithApprovedCard();
-//        dailyTrip.clickPayButton();
-//        dailyTrip.insert(DataHelper.deleteSpacebar(user.getNumber()), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-//        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-//        dailyTrip.success();
-//    }
-//    @Test
-//    public void test() {
-//        var s = DataHelper.generateDigit(16);
-//        var a = DataHelper.deleteSpacebar(s);
-//        System.out.println("hey");
-//    }
+    @Feature("Покупка тура по карте")
+    @Story("Дефис в поле владелец")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test
+    public void shouldSuccessWithHyphenInHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var holder = user.getHolder() + "-" + faker.name().lastName().toUpperCase();
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.success();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Нижний регистр в поле владелец")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test
+    public void shouldAutoUpperCaseInHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var holder = user.getHolder().toLowerCase();
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        assertEquals(user.getHolder(), dailyTrip.getHolder());
+        dailyTrip.success();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Пробелы вначале и в конце поля владелец")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void shouldAutoDeleteStartEndHyphenInHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var holder = " " + user.getHolder() + " ";
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        assertEquals(user.getHolder(), dailyTrip.getHolder());
+        dailyTrip.success();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Дефисы вначале и в конце поля владелец")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void shouldAutoDeleteStartEndSpacebarInHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var holder = "-" + user.getHolder() + "-";
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        assertEquals(user.getHolder(), dailyTrip.getHolder());
+        dailyTrip.success();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Кириллица в поле владелец")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test
+    public void shouldNotificationWithCyrillicInHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var holder = new Faker(new Locale("ru", "RU")).name().fullName().toUpperCase();
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        assertEquals("", dailyTrip.getHolder());
+        dailyTrip.holderInputEmpty();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Невалидные символы в поле владелец")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void shouldNotificationWithInvalidSymbolInHolder() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var holder = "123 @%# ;',/";
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        assertEquals("", dailyTrip.getHolder());
+        dailyTrip.holderInputEmpty();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Пустое поле CVC/CVV")
+    @Severity(SeverityLevel.NORMAL)
+    @Test
+    public void shouldNotificationWithEmptyCVC() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
+        dailyTrip.cvcInputEmpty();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("2 цифры в поле CVC/CVV")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void shouldNotificationWith2DigitsInCVC() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var cvc = DataHelper.generateCVC(2);
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.cvcInputInvalid();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("4 цифры в поле CVC/CVV")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void shouldSuccessWith4DigitsInCVC() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var cvc = user.getCvc() + DataHelper.generateCVC(1);
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.success();
+    }
+
+    @Feature("Покупка тура по карте")
+    @Story("Невалидные символы в поле CVC/CVV")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void shouldNotificationWithInvalidSymbolsInCVC() {
+        user = DataHelper.getValidUserWithApprovedCard();
+        dailyTrip.clickPayButton();
+        var cvc = "ZЯ$";
+        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
+        dailyTrip.cvcInputEmpty();
+    }
 }
