@@ -141,8 +141,6 @@ public class DailyTripFrontendTest {
         assertEquals(credits.get(0).getId(), orders.get(0).getCredit_id());
     }
 
-    //todo тест с вводом с помощью TAB
-
     @Feature("Покупка тура по карте")
     @Story("Переключение с формы кредита на форму покупки")
     @Severity(SeverityLevel.MINOR)
@@ -437,7 +435,7 @@ public class DailyTripFrontendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Заполнение поля год 4 цифрами")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldDeleteThirdFourDigitInYear() {
         user = DataHelper.getValidUserWithApprovedCard();
@@ -543,7 +541,7 @@ public class DailyTripFrontendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Нижний регистр в поле владелец")
-    @Severity(SeverityLevel.CRITICAL)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldAutoUpperCaseInHolder() {
         user = DataHelper.getValidUserWithApprovedCard();
@@ -556,7 +554,7 @@ public class DailyTripFrontendTest {
 
     @Feature("Покупка тура по карте")
     @Story("Пробелы вначале и в конце поля владелец")
-    @Severity(SeverityLevel.MINOR)
+    @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldAutoDeleteStartEndHyphenInHolder() {
         user = DataHelper.getValidUserWithApprovedCard();
@@ -587,7 +585,7 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithCyrillicInHolder() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        var holder = new Faker(new Locale("ru", "RU")).name().fullName().toUpperCase();
+        var holder = DataHelper.generateHolder(new Locale("ru", "RU"));
         dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals("", dailyTrip.getHolder());
         dailyTrip.holderInputEmpty();

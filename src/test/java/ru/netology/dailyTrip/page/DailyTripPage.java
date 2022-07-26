@@ -51,22 +51,8 @@ public class DailyTripPage {
         form.should(Condition.visible);
     }
 
-    public void clickPayButtonUseKeyboard() {
-        dailyTripCard.pressTab();
-        payButton.should(Condition.focused).pressEnter();
-        formHeading.should(Condition.visible, Condition.text("Оплата по карте"));
-        form.should(Condition.visible);
-    }
-
     public void clickCreditButton() {
         creditButton.click();
-        formHeading.should(Condition.visible, Condition.text("Кредит по данным карты"));
-        form.should(Condition.visible);
-    }
-
-    public void clickCreditButtonUseKeyboard() {
-        dailyTripCard.pressTab().pressTab();
-        creditButton.should(Condition.focused).pressEnter();
         formHeading.should(Condition.visible, Condition.text("Кредит по данным карты"));
         form.should(Condition.visible);
     }
@@ -83,27 +69,6 @@ public class DailyTripPage {
         cvcLabel.click();
         cvcInput.val(cvc);
         continuousButton.click();
-    }
-
-    public void insertUseKeyboard(String number, String month, String year, String holder, String cvc) {
-        numberLabel.shouldNot(Condition.cssClass("input_focused"));
-        monthLabel.shouldNot(Condition.cssClass("input_focused"));
-        yearLabel.shouldNot(Condition.cssClass("input_focused"));
-        holderLabel.shouldNot(Condition.cssClass("input_focused"));
-        cvcLabel.shouldNot(Condition.cssClass("input_focused"));
-
-        creditButton.pressTab();
-        numberLabel.should(Condition.cssClass("input_focused"));
-        numberInput.val(number).pressTab();
-        monthLabel.should(Condition.cssClass("input_focused"));
-        monthInput.val(month).pressTab();
-        yearLabel.should(Condition.cssClass("input_focused"));
-        yearInput.val(year).pressTab();
-        holderLabel.should(Condition.cssClass("input_focused"));
-        holderInput.val(holder).pressTab();
-        cvcLabel.should(Condition.cssClass("input_focused"));
-        cvcInput.val(cvc).pressTab();
-        continuousButton.should(Condition.focused).pressEnter();
     }
 
     public void matchesInputValue(String number, String month, String year, String holder, String cvc) {

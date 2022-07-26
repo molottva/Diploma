@@ -2,7 +2,6 @@ package ru.netology.dailyTrip.helpers;
 
 import com.github.javafaker.Faker;
 import lombok.Value;
-import ru.netology.dailyTrip.page.DailyTripPage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -58,7 +57,7 @@ public class DataHelper {
 
     public static String generateHolder(Locale locale) {
         Faker fakerCustomLocale = new Faker(locale);
-        return fakerCustomLocale.name().fullName();
+        return fakerCustomLocale.name().fullName().toUpperCase();
     }
 
     public static String generateCVC(int quantity) {

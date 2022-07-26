@@ -20,8 +20,6 @@ public class DbHelper {
     @SneakyThrows
     public static void setup() {
         runner = new QueryRunner();
-        //todo delete
-//        var s = System.getProperty("dbUrl");
         conn = DriverManager.getConnection(System.getProperty("dbUrl"), "app", "pass");
     }
 
