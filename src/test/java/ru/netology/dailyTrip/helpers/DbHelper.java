@@ -10,7 +10,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class DbHelper {
@@ -20,8 +20,9 @@ public class DbHelper {
     @SneakyThrows
     public static void setup() {
         runner = new QueryRunner();
-//        var s = System.getProperty("url");
-        conn = DriverManager.getConnection(System.getProperty("url"), "app", "pass");
+        //todo delete
+//        var s = System.getProperty("dbUrl");
+        conn = DriverManager.getConnection(System.getProperty("dbUrl"), "app", "pass");
     }
 
     @SneakyThrows
@@ -41,7 +42,7 @@ public class DbHelper {
     public static class PaymentEntity {
         private String id;
         private int amount;
-        private LocalDateTime created;
+        private Timestamp created;
         private String status;
         private String transaction_id;
     }
@@ -60,7 +61,7 @@ public class DbHelper {
     public static class CreditRequestEntity {
         private String id;
         private String bank_id;
-        private LocalDateTime created;
+        private Timestamp created;
         private String status;
     }
 
@@ -77,7 +78,7 @@ public class DbHelper {
     @AllArgsConstructor
     public static class OrderEntity {
         private String id;
-        private LocalDateTime created;
+        private Timestamp created;
         private String credit_id;
         private String payment_id;
     }

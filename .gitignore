@@ -4,6 +4,7 @@ HELP.md
 .gradle
 build/
 allure-results/
+data/
 
 ### STS ###
 .apt_generated

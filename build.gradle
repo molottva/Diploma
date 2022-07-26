@@ -32,9 +32,9 @@ dependencies {
     testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.1.1'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
 
+    implementation group: 'commons-dbutils', name: 'commons-dbutils', version: '1.7'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
-    implementation group: 'commons-dbutils', name: 'commons-dbutils', version: '1.7'
 
     implementation group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
     implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.18.1'
@@ -44,5 +44,5 @@ dependencies {
 test {
     useTestNG()
     systemProperty 'selenide.headless', System.getProperty('selenide.headless')
-    systemProperty 'url', System.getProperty('url', 'jdbc:mysql://localhost:3306/app')
+    systemProperty 'dbUrl', System.getProperty('dbUrl')
 }

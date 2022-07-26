@@ -24,9 +24,3 @@ services:
     image: gate-simulator:1.0
     ports:
       - '9999:9999'
-
-#  java-app:
-#    build: ./artifacts/aqa-shop/
-#    image: aqa-shop:1.0
-#    ports:
-#      - '8080:8080'
