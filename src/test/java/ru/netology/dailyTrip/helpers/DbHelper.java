@@ -20,6 +20,8 @@ public class DbHelper {
     @SneakyThrows
     public static void setup() {
         runner = new QueryRunner();
+        //todo delete
+//        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
         conn = DriverManager.getConnection(System.getProperty("dbUrl"), "app", "pass");
     }
 

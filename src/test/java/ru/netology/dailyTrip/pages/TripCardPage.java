@@ -5,19 +5,19 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$x;
 
-public class DailyTripCardPage {
-    private static SelenideElement dailyTripHeading = $x("//div[@id='root']/div/h2");
-    private static SelenideElement dailyTripCard = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
+public class TripCardPage {
+    private static final SelenideElement dailyTripHeading = $x("//div[@id='root']/div/h2");
+    private static final SelenideElement dailyTripCard = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
 
-    private SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
-    private SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
+    private static final SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
+    private static final SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
 
-    private SelenideElement formHeading = $x("//form//preceding-sibling::h3");
-    private SelenideElement form = $x("//form");
-    private SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
-    private SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
+    private static final SelenideElement formHeading = $x("//form//preceding-sibling::h3");
+    private static final SelenideElement form = $x("//form");
+    private static final SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
+    private static final SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
 
-    public DailyTripCardPage() {
+    public TripCardPage() {
         dailyTripHeading.should(Condition.visible, Condition.text("Путешествие дня"));
         dailyTripCard.should(Condition.visible);
 
@@ -30,16 +30,16 @@ public class DailyTripCardPage {
         errorNotification.should(Condition.hidden);
     }
 
-    public DailyTripFormPage clickPayButton() {
+    public TripFormPage clickPayButton() {
         payButton.click();
         formHeading.should(Condition.visible, Condition.text("Оплата по карте"));
-        return new DailyTripFormPage();
+        return new TripFormPage();
     }
 
-    public DailyTripFormPage clickCreditButton() {
+    public TripFormPage clickCreditButton() {
         creditButton.click();
         formHeading.should(Condition.visible, Condition.text("Кредит по данным карты"));
-        return new DailyTripFormPage();
+        return new TripFormPage();
     }
 
     public int getAmount() {
