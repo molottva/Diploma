@@ -1,4 +1,4 @@
-package ru.netology.dailyTrip.page;
+package ru.netology.dailyTrip.pages;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
@@ -7,14 +7,11 @@ import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.$x;
 
-public class DailyTripPage {
-    private static SelenideElement dailyTripHeading = $x("//div[@id='root']/div/h2");
+public class DailyTripFormPage {
     private static SelenideElement dailyTripCard = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
 
     private SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
     private SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
-
-    private SelenideElement formHeading = $x("//form//preceding-sibling::h3");
     private SelenideElement form = $x("//form");
     private SelenideElement numberLabel = form.$x(".//span[text()='Номер карты']//ancestor::div/span");
     private SelenideElement numberInput = numberLabel.$x(".//ancestor::span//input");
@@ -33,31 +30,17 @@ public class DailyTripPage {
     private SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
     private SelenideElement errorCloseButton = errorNotification.$x("./button");
 
-    public DailyTripPage() {
-        dailyTripHeading.should(Condition.visible, Condition.text("Путешествие дня"));
+    public DailyTripFormPage() {
         dailyTripCard.should(Condition.visible);
-
         payButton.should(Condition.visible);
         creditButton.should(Condition.visible);
 
-        form.should(Condition.hidden);
+        form.should(Condition.visible);
         successNotification.should(Condition.hidden);
         errorNotification.should(Condition.hidden);
     }
 
-    public void clickPayButton() {
-        payButton.click();
-        formHeading.should(Condition.visible, Condition.text("Оплата по карте"));
-        form.should(Condition.visible);
-    }
-
-    public void clickCreditButton() {
-        creditButton.click();
-        formHeading.should(Condition.visible, Condition.text("Кредит по данным карты"));
-        form.should(Condition.visible);
-    }
-
-    public void insert(String number, String month, String year, String holder, String cvc) {
+    public void insertingValueInForm(String number, String month, String year, String holder, String cvc) {
         numberLabel.click();
         numberInput.val(number);
         monthLabel.click();
@@ -71,7 +54,7 @@ public class DailyTripPage {
         continuousButton.click();
     }
 
-    public void matchesInputValue(String number, String month, String year, String holder, String cvc) {
+    public void matchesByInsertValue(String number, String month, String year, String holder, String cvc) {
         numberInput.should(Condition.value(number));
         monthInput.should(Condition.value(month));
         yearInput.should(Condition.value(year));
@@ -79,7 +62,7 @@ public class DailyTripPage {
         cvcInput.should(Condition.value(cvc));
     }
 
-    public void success() {
+    public void assertBuyOperationIsSuccessful() {
         successNotification.should(Condition.visible, Duration.ofSeconds(15));
         successNotification.should(Condition.cssClass("notification_visible"));
         successNotification.$x("./div[@class='notification__title']").should(Condition.text("Успешно"));
@@ -88,7 +71,7 @@ public class DailyTripPage {
         successNotification.should(Condition.hidden);
     }
 
-    public void error() {
+    public void assertBuyOperationWithErrorNotification() {
         errorNotification.should(Condition.visible, Duration.ofSeconds(15));
         errorNotification.should(Condition.cssClass("notification_visible"));
         errorNotification.$x("/div[@class='notification__title']").should(Condition.text("Ошибка"));
@@ -97,61 +80,57 @@ public class DailyTripPage {
         errorNotification.should(Condition.hidden);
     }
 
-    public void numberInputEmpty() {
+    public void assertNumberFieldIsEmptyValue() {
         numberLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
         numberLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
     }
 
-    public void numberInputInvalid() {
+    public void assertNumberFieldIsInvalidValue() {
         numberLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
         numberLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
-    public void monthInputEmpty() {
+    public void assertMonthFieldIsEmptyValue() {
         monthLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
         monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
     }
 
-    public void monthInputInvalid() {
+    public void assertMonthFieldIsInvalidValue() {
         monthLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
         monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверно указан срок действия карты"));
     }
 
-    public void yearInputEmpty() {
+    public void assertYearFieldIsEmptyValue() {
         yearLabel.should(Condition.cssClass("input_invalid"));
         yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
     }
 
-    public void yearInputInvalid() {
+    public void assertYearFieldIsInvalidValue() {
         yearLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
         yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Истёк срок действия карты"));
     }
 
-    public void holderInputEmpty() {
+    public void assertHolderFieldIsEmptyValue() {
         holderLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
         holderLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
     }
 
-    public void holderInputInvalid() {
+    public void assertHolderFieldIsInvalidValue() {
         holderLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
         holderLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
-    public void cvcInputEmpty() {
+    public void assertCvcFieldIsEmptyValue() {
         cvcLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
         cvcLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
     }
 
-    public void cvcInputInvalid() {
+    public void assertCvcFieldIsInvalidValue() {
         cvcLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
         cvcLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
-    public int getAmount() {
-        var str = dailyTripCard.$x(".//ul/li[contains(text(), 'руб')]").getText().split(" ");
-        return Integer.valueOf(str[1] + str[2]);
-    }
-
+    //todo переделать
     public String getHolder() {
         return holderInput.getValue();
     }

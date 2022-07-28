@@ -7,7 +7,7 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.testng.annotations.*;
 import ru.netology.dailyTrip.helpers.DataHelper;
 import ru.netology.dailyTrip.helpers.DbHelper;
-import ru.netology.dailyTrip.page.DailyTripPage;
+import ru.netology.dailyTrip.pages.DailyTripFormPage;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +19,7 @@ import static org.testng.AssertJUnit.*;
 public class DailyTripFrontendTest {
     private static Faker faker = new Faker(Locale.ENGLISH);
     private static DataHelper.UserData user;
-    private static DailyTripPage dailyTrip;
+    private static DailyTripFormPage dailyTrip;
     private static List<DbHelper.PaymentEntity> payments;
     private static List<DbHelper.CreditRequestEntity> credits;
     private static List<DbHelper.OrderEntity> orders;
@@ -34,7 +34,7 @@ public class DailyTripFrontendTest {
     @BeforeMethod
     public void setupMethod() {
         open("http://localhost:8080/");
-        dailyTrip = new DailyTripPage();
+        dailyTrip = new DailyTripFormPage();
     }
 
     @AfterMethod
@@ -54,9 +54,9 @@ public class DailyTripFrontendTest {
     public void shouldHappyPathPay() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
 
         payments = DbHelper.getPayments();
         credits = DbHelper.getCreditsRequest();
@@ -78,9 +78,9 @@ public class DailyTripFrontendTest {
     public void shouldSadPathPay() {
         user = DataHelper.getValidUserWithDeclinedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.error();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationWithErrorNotification();
 
         payments = DbHelper.getPayments();
         credits = DbHelper.getCreditsRequest();
@@ -102,9 +102,9 @@ public class DailyTripFrontendTest {
     public void shouldHappyPathCredit() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickCreditButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
 
         payments = DbHelper.getPayments();
         credits = DbHelper.getCreditsRequest();
@@ -125,9 +125,9 @@ public class DailyTripFrontendTest {
     public void shouldSadPathCredit() {
         user = DataHelper.getValidUserWithDeclinedCard();
         dailyTrip.clickCreditButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.error();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationWithErrorNotification();
 
         payments = DbHelper.getPayments();
         credits = DbHelper.getCreditsRequest();
@@ -148,9 +148,9 @@ public class DailyTripFrontendTest {
     public void shouldImmutableInputValueFromCreditToPay() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickCreditButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
         dailyTrip.clickPayButton();
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
     }
 
     @Feature("Покупка тура в кредит")
@@ -160,9 +160,9 @@ public class DailyTripFrontendTest {
     public void shouldImmutableInputValueFromPayToCredit() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
         dailyTrip.clickCreditButton();
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
     }
 
     @Feature("Покупка тура по карте")
@@ -172,9 +172,9 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithEmptyNumber() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.numberInputEmpty();
+        dailyTrip.insertingValueInForm("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertNumberFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -184,9 +184,9 @@ public class DailyTripFrontendTest {
     public void shouldSuccessWithNoSpacebarInNumber() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(DataHelper.deleteSpacebar(user.getNumber()), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(DataHelper.deleteSpacebar(user.getNumber()), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -196,9 +196,9 @@ public class DailyTripFrontendTest {
     public void shouldSuccessWithStartEndSpacebarInNumber() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(" " + user.getNumber() + " ", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(" " + user.getNumber() + " ", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -209,9 +209,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = DataHelper.generateCardNumber(11);
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.numberInputInvalid();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertNumberFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -222,9 +222,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = DataHelper.generateCardNumber(12);
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.error();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationWithErrorNotification();
     }
 
     @Feature("Покупка тура по карте")
@@ -235,9 +235,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = DataHelper.generateCardNumber(13);
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.error();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationWithErrorNotification();
     }
 
     @Feature("Покупка тура по карте")
@@ -248,9 +248,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = DataHelper.generateCardNumber(18);
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.error();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationWithErrorNotification();
     }
 
     @Feature("Покупка тура по карте")
@@ -261,9 +261,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = DataHelper.generateCardNumber(19);
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.error();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationWithErrorNotification();
     }
 
     @Feature("Покупка тура по карте")
@@ -274,9 +274,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = DataHelper.generateCardNumber(20);
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.numberInputInvalid();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertNumberFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -287,9 +287,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cardNumber = "ASFD ФЯВЫ @&#% _,';";
-        dailyTrip.insert(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.numberInputEmpty();
+        dailyTrip.insertingValueInForm(cardNumber, user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue("", user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertNumberFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -299,9 +299,9 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithEmptyMonth() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.monthInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertMonthFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -312,9 +312,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = DataHelper.generateDigit(1);
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), "0" + month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), "0" + month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -325,9 +325,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = user.getMonth() + "0";
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -338,9 +338,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = "00";
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.monthInputInvalid();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertMonthFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -351,9 +351,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = "01";
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -364,9 +364,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = "12";
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -377,9 +377,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = "13";
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.monthInputInvalid();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertMonthFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -390,9 +390,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var month = "Z@";
-        dailyTrip.insert(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.monthInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), "", user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertMonthFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -402,9 +402,9 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithEmptyYear() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
-        dailyTrip.yearInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
+        dailyTrip.assertYearFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -415,9 +415,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var year = DataHelper.generateDigit(1);
-        dailyTrip.insert(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.yearInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.assertYearFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -428,9 +428,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var year = user.getYear() + "0";
-        dailyTrip.insert(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -441,9 +441,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var year = "20" + user.getYear();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), "20", user.getHolder(), user.getCvc());
-        dailyTrip.yearInputInvalid();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), "20", user.getHolder(), user.getCvc());
+        dailyTrip.assertYearFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -454,9 +454,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var year = DataHelper.generateYear(-1);
-        dailyTrip.insert(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.yearInputInvalid();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.assertYearFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -468,9 +468,9 @@ public class DailyTripFrontendTest {
         dailyTrip.clickPayButton();
         var month = DataHelper.generateMonth(-1);
         var year = DataHelper.generateYear(0);
-        dailyTrip.insert(user.getNumber(), month, year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, year, user.getHolder(), user.getCvc());
-        dailyTrip.monthInputInvalid();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, year, user.getHolder(), user.getCvc());
+        dailyTrip.assertMonthFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -482,9 +482,9 @@ public class DailyTripFrontendTest {
         dailyTrip.clickPayButton();
         var month = DataHelper.generateMonth(0);
         var year = DataHelper.generateYear(0);
-        dailyTrip.insert(user.getNumber(), month, year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, year, user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, year, user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -496,9 +496,9 @@ public class DailyTripFrontendTest {
         dailyTrip.clickPayButton();
         var month = DataHelper.generateMonth(0);
         var year = DataHelper.generateYear(5);
-        dailyTrip.insert(user.getNumber(), month, year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), month, year, user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), month, year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), month, year, user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -509,9 +509,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var year = "Z@";
-        dailyTrip.insert(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
-        dailyTrip.yearInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), year, user.getHolder(), user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), "", user.getHolder(), user.getCvc());
+        dailyTrip.assertYearFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -521,9 +521,9 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithEmptyHolder() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), "", user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), "", user.getCvc());
-        dailyTrip.holderInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), "", user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), "", user.getCvc());
+        dailyTrip.assertHolderFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -534,9 +534,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var holder = user.getHolder() + "-" + faker.name().lastName().toUpperCase();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -547,9 +547,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var holder = user.getHolder().toLowerCase();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals(user.getHolder(), dailyTrip.getHolder());
-        dailyTrip.success();
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -560,9 +560,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var holder = " " + user.getHolder() + " ";
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals(user.getHolder(), dailyTrip.getHolder());
-        dailyTrip.success();
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -573,9 +573,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var holder = "-" + user.getHolder() + "-";
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals(user.getHolder(), dailyTrip.getHolder());
-        dailyTrip.success();
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -586,9 +586,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var holder = DataHelper.generateHolder(new Locale("ru", "RU"));
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals("", dailyTrip.getHolder());
-        dailyTrip.holderInputEmpty();
+        dailyTrip.assertHolderFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -599,9 +599,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var holder = "123 @%# ;',/";
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals("", dailyTrip.getHolder());
-        dailyTrip.holderInputEmpty();
+        dailyTrip.assertHolderFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -611,9 +611,9 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithEmptyCVC() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
-        dailyTrip.cvcInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
+        dailyTrip.assertCvcFieldIsEmptyValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -624,9 +624,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cvc = DataHelper.generateCVC(2);
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
-        dailyTrip.cvcInputInvalid();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.assertCvcFieldIsInvalidValue();
     }
 
     @Feature("Покупка тура по карте")
@@ -637,9 +637,9 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cvc = user.getCvc() + DataHelper.generateCVC(1);
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
-        dailyTrip.success();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
+        dailyTrip.assertBuyOperationIsSuccessful();
     }
 
     @Feature("Покупка тура по карте")
@@ -650,8 +650,8 @@ public class DailyTripFrontendTest {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
         var cvc = "ZЯ$";
-        dailyTrip.insert(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
-        dailyTrip.matchesInputValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
-        dailyTrip.cvcInputEmpty();
+        dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
+        dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), "");
+        dailyTrip.assertCvcFieldIsEmptyValue();
     }
 }
