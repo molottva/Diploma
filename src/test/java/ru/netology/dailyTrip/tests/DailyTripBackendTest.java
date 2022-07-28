@@ -22,7 +22,7 @@ import static org.testng.AssertJUnit.*;
 
 @Epic("Backend тестирование функционала Путешествие дня")
 public class DailyTripBackendTest {
-    private static DataHelper.UserData user;
+    private static DataHelper.CardData user;
     private static Gson gson = new Gson();
     private static RequestSpecification spec = new RequestSpecBuilder().setBaseUri("http://localhost").setPort(9999)
             .setAccept(ContentType.JSON).setContentType(ContentType.JSON).log(LogDetail.ALL).build();
@@ -182,8 +182,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyNumberPay() {
-        user = new DataHelper.UserData(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
-                DataHelper.generateHolder(), DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
+                DataHelper.generateValidHolder(), DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(paymentUrl)
@@ -202,8 +202,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyNumberCredit() {
-        user = new DataHelper.UserData(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
-                DataHelper.generateHolder(), DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
+                DataHelper.generateValidHolder(), DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
@@ -222,8 +222,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyMonthPay() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
-                DataHelper.generateHolder(), DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
+                DataHelper.generateValidHolder(), DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(paymentUrl)
@@ -242,8 +242,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyMonthCredit() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
-                DataHelper.generateHolder(), DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
+                DataHelper.generateValidHolder(), DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
@@ -262,8 +262,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyYearPay() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
-                DataHelper.generateHolder(), DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
+                DataHelper.generateValidHolder(), DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(paymentUrl)
@@ -282,8 +282,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyYearCredit() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
-                DataHelper.generateHolder(), DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
+                DataHelper.generateValidHolder(), DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
@@ -302,8 +302,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyHolderPay() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
-                DataHelper.generateYear(2), null, DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
+                DataHelper.generateYear(2), null, DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(paymentUrl)
@@ -322,8 +322,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyHolderCredit() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
-                DataHelper.generateYear(2), null, DataHelper.generateCVC(3));
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
+                DataHelper.generateYear(2), null, DataHelper.generateValidCVC(3));
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
@@ -342,8 +342,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyCvcPay() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
-                DataHelper.generateYear(2), DataHelper.generateHolder(), null);
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
+                DataHelper.generateYear(2), DataHelper.generateValidHolder(), null);
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(paymentUrl)
@@ -362,8 +362,8 @@ public class DailyTripBackendTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void shouldStatus400EmptyCvcCredit() {
-        user = new DataHelper.UserData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
-                DataHelper.generateYear(2), DataHelper.generateHolder(), null);
+        user = new DataHelper.CardData(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
+                DataHelper.generateYear(2), DataHelper.generateValidHolder(), null);
         var body = gson.toJson(user);
         given().spec(spec).body(body)
                 .when().post(creditUrl)

@@ -18,7 +18,7 @@ import static org.testng.AssertJUnit.*;
 @Epic("Frontend тестирование функционала Путешествие дня")
 public class DailyTripFrontendTest {
     private static Faker faker = new Faker(Locale.ENGLISH);
-    private static DataHelper.UserData user;
+    private static DataHelper.CardData user;
     private static DailyTripFormPage dailyTrip;
     private static List<DbHelper.PaymentEntity> payments;
     private static List<DbHelper.CreditRequestEntity> credits;
@@ -585,7 +585,7 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWithCyrillicInHolder() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        var holder = DataHelper.generateHolder(new Locale("ru", "RU"));
+        var holder = DataHelper.generateInvalidHolderWithCustomLocale(new Locale("ru", "RU"));
         dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), holder, user.getCvc());
         assertEquals("", dailyTrip.getHolder());
         dailyTrip.assertHolderFieldIsEmptyValue();
@@ -623,7 +623,7 @@ public class DailyTripFrontendTest {
     public void shouldNotificationWith2DigitsInCVC() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        var cvc = DataHelper.generateCVC(2);
+        var cvc = DataHelper.generateValidCVC(2);
         dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
         dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
         dailyTrip.assertCvcFieldIsInvalidValue();
@@ -636,7 +636,7 @@ public class DailyTripFrontendTest {
     public void shouldSuccessWith4DigitsInCVC() {
         user = DataHelper.getValidUserWithApprovedCard();
         dailyTrip.clickPayButton();
-        var cvc = user.getCvc() + DataHelper.generateCVC(1);
+        var cvc = user.getCvc() + DataHelper.generateValidCVC(1);
         dailyTrip.insertingValueInForm(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), cvc);
         dailyTrip.matchesByInsertValue(user.getNumber(), user.getMonth(), user.getYear(), user.getHolder(), user.getCvc());
         dailyTrip.assertBuyOperationIsSuccessful();

@@ -11,7 +11,7 @@ public class DataHelper {
     private static Faker faker = new Faker(Locale.ENGLISH);
 
     @Value
-    public static class UserData {
+    public static class CardData {
         private final String number;
         private final String month;
         private final String year;
@@ -19,29 +19,54 @@ public class DataHelper {
         private final String cvc;
     }
 
-    public static UserData getValidUserWithApprovedCard() {
-        return new UserData(getNumberByStatus("approved"), generateMonth(1), generateYear(2),
-                generateHolder(), generateCVC(3));
+    public static CardData getValidUserWithApprovedCard() {
+        return new CardData(getNumberByStatus("approved"), generateMonth(1), generateYear(2),
+                generateValidHolder(), generateValidCVC());
     }
 
-    public static UserData getValidUserWithDeclinedCard() {
-        return new UserData(getNumberByStatus("declined"), generateMonth(1), generateYear(2),
-                generateHolder(), generateCVC(3));
+    public static CardData getValidUserWithDeclinedCard() {
+        return new CardData(getNumberByStatus("declined"), generateMonth(1), generateYear(2),
+                generateValidHolder(), generateValidCVC());
     }
 
     public static String getNumberByStatus(String status) {
-        status = status.toUpperCase();
-        if (status.equals("APPROVED")) {
+        if (status.equalsIgnoreCase("APPROVED")) {
             return "4444 4444 4444 4441";
-        } else if (status.equals("DECLINED")) {
+        } else if (status.equalsIgnoreCase("DECLINED")) {
             return "4444 4444 4444 4442";
         }
         return null;
     }
 
-    public static String generateCardNumber(int quantity) {
-        return generateDigit(quantity);
+    public static String generateInvalidCardNumberWith11Digit() {
+        return faker.numerify("4444 44## ###");
     }
+
+    public static String generateValidCardNumberWith12Digit() {
+        return faker.numerify("4444 44## ####");
+    }
+
+    public static String generateValidCardNumberWith13Digit() {
+        return faker.numerify("4444 44## #### #");
+    }
+
+    public static String generateValidCardNumberWith16Digit() {
+        return faker.numerify("4444 44## #### ####");
+    }
+
+    public static String generateValidCardNumberWith18Digit() {
+        return faker.numerify("4444 44## #### #### ##");
+    }
+
+    public static String generateValidCardNumberWith19Digit() {
+        return faker.numerify("4444 44## #### #### ###");
+    }
+
+    public static String generateInvalidCardNumberWith20Digit() {
+        return faker.numerify("4444 44## #### #### ####");
+    }
+
+    //todo метод без проблеов
 
     public static String generateMonth(int shiftMonth) {
         return LocalDate.now().plusMonths(shiftMonth).format(DateTimeFormatter.ofPattern("MM"));
@@ -51,38 +76,24 @@ public class DataHelper {
         return LocalDate.now().plusYears(shiftYear).format(DateTimeFormatter.ofPattern("yy"));
     }
 
-    public static String generateHolder() {
+    public static String generateValidHolder() {
         return faker.name().fullName().toUpperCase();
     }
 
-    public static String generateHolder(Locale locale) {
+    public static String generateInvalidHolderWithCustomLocale(Locale locale) {
         Faker fakerCustomLocale = new Faker(locale);
         return fakerCustomLocale.name().fullName().toUpperCase();
     }
 
-    public static String generateCVC(int quantity) {
-        return deleteSpacebar(generateDigit(quantity));
+    public static String generateValidCVC() {
+        return faker.numerify("###");
     }
 
-    public static String generateDigit(int quantity) {
-        String tmp = "";
-        for (int i = 0; i < quantity; i++) {
-            if (i % 4 == 0) {
-                tmp = tmp + " ";
-            }
-            tmp = tmp + String.valueOf(faker.number().randomDigit());
-        }
-        return tmp;
+    public static String generateInvalidCVCWith2Digit() {
+        return faker.numerify("##");
     }
 
-    public static String deleteSpacebar(String str) {
-        var array = str.split(" ");
-        String result = "";
-        int i = 1;
-        for (String tmp : array) {
-            result = result + tmp;
-            i++;
-        }
-        return result;
+    public static String generateInvalidCVCWith4Digit() {
+        return faker.numerify("####");
     }
 }
