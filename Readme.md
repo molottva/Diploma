@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/kt9uq5rk9am96hh6?svg=true)](https://ci.appveyor.com/project/molottva/diploma)
+
 # Дипломный проект профессии «Тестировщик»
 
 ## Запуск SUT, авто-тестов и генерация репорта
